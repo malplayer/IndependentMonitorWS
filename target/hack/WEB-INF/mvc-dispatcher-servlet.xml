@@ -1,0 +1,74 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <context:component-scan base-package="com.att.hack"/>
+
+    <!-- the mvc resources tag does the magic -->
+
+    <mvc:resources mapping="/static/**" location="/static/" />
+
+    <mvc:annotation-driven />
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+
+        <property name="order" value="1" />
+        <property name="contentNegotiationManager" ref="cnManager"/>
+
+        <property name="defaultViews">
+            <list>
+                <!-- JSON View -->
+                <bean
+                        class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                </bean>
+
+                <!-- RSS View -->
+
+
+
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="cnManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="defaultContentType" value="text/html" />
+
+        <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html" />
+                <entry key="json" value="application/json" />
+                <entry key="rss" value="application/rss+xml" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- If no extension matched, use JSP view -->
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="2" />
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+
+
+
+</beans>
